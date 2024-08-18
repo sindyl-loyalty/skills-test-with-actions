@@ -45,9 +45,10 @@ jobs:
     # https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#jobsjob_idsteps
     steps:
       - name: Echo the Input Just For a Start
-        run: |
-          echo This is the skeleton of the CICCD Task. Our Input is: ${{inputs.example}}
-
+        run: | 
+              echo This is the skeleton of the CICCD Task.
+              Our Input is: ${{inputs.example}}
+        
     # TODO: Lets have a step which installs DBT
 
     # TODO: Lets have a step to checkout the code in the branch we want to update.
