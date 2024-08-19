@@ -58,8 +58,8 @@ jobs:
     steps:
       - name: Echo the Input Just For a Start
         run: | 
-              echo This is the skeleton of the CICCD Task.
-              Our Input is: ${{inputs.example}}        
+          echo This is the skeleton of the CICCD Task. 
+          Our Input is: ${{inputs.example}}     
 
     # TODO: Lets have a step which installs DBT
 
