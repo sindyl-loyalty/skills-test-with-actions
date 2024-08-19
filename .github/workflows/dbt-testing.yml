@@ -37,6 +37,7 @@ on:
       - reopened
       - labeled
       - ready_for_review
+      - 
     branches:
       - main
 
