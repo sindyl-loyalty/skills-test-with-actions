@@ -51,14 +51,14 @@ jobs:
     name: DBT Test
     # Ubuntu Latest has heaps of software installed on it. See:
     # https://github.com/actions/runner-images/blob/ubuntu22/20240804.1/images/ubuntu/Ubuntu2204-Readme.md
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest
 
     #Specify location of the profiles.yml configuration file and project directory
     #And name of the secret containing the token to connect to Databricks
     env:
       DBT_PROFILES_DIR: ./dp_airflow/dbt/data_platform
       DBT_PROJECT_DIR: ./dp_airflow/dbt/data_platform
-      databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
+      databricks_token: ${{ secrets.databricks_token }}
     
     # Each job has Steps - each step has its own process in the runner, so variables are not shared. See:
     # https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#jobsjob_idsteps
@@ -69,14 +69,14 @@ jobs:
 
     # TODO: Lets have a step to checkout the code in the branch we want to update.
     #  (how do we do this with manual input?)      
-    # TEMP: checkout code       
-      - name: checkout code
+    # TEMP: checkout code
+      - name: TEMP checkout code
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
   
     # TODO: Lets have a step which installs DBT
-      - name: set up python
+      - name: Choose python version
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
@@ -92,7 +92,7 @@ jobs:
 
     # TODO: Can we use that code to connect to Databricks?
     # TEMP: check connection     
-      - name: check connection
+      - name: TEMP check connection
         run: |
           dbt debug --target local --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
 
