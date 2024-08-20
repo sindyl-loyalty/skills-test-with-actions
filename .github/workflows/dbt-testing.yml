@@ -88,13 +88,13 @@ jobs:
       - name: Verify dbt installation
         run: |
           dbt --version
-          dbt deps --profiles-dir "$DBT_PROFILES_DIR" --target dev --project-dir "$DBT_PROJECT_DIR"
+          dbt deps --target local --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
 
     # TODO: Can we use that code to connect to Databricks?
     # TEMP: check connection     
       - name: check connection
         run: |
-          dbt debug --target dev --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
+          dbt debug --target local --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
 
 
     # TODO: How can we detect which models have changed?
