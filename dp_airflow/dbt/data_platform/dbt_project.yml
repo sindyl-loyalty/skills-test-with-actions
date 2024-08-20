@@ -1,0 +1,113 @@
+
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good project name should reflect your organization's
+# name or the intended use of these models
+name: 'data_platform'
+version: '1.0.0'
+config-version: 2
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'data_platform'
+
+# Global variables can be used in the project
+vars:
+  report_months: '36'
+
+# These configurations specify where dbt should look for different types of files.
+# The `model-paths` config, for example, states that models in this project can be
+# found in the "models/" directory. You probably won't need to change these!
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+target-path: "target"
+
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+
+# Configuring models
+# Full documentation: https://docs.getdbt.com/docs/configuring-models
+
+# In this example config, we tell dbt to build all models in the example/
+# directory as views. These settings can be overridden in the individual model
+# files using the `{{ config(...) }}` macro.
+models:
+  data_platform:
+    # Config indicated by + and applies to all files under models/example/
+    +materialized: table
+
+    published:
+      published_analytics:
+        +schema: published_analytics
+        +materialized: table
+      published_loyalty_analytics:
+        +schema: published_loyalty_analytics
+        +materialized: table
+
+    derived_lc_resources:
+      +schema: derived_lc_resources
+      +materialized: table
+
+    transformed_products:
+      +schema: transformed_products
+      +materialized: table
+
+    raw_lc_resources:
+      +schema: raw_lc_resources
+      +materialized: table
+
+    raw_datarobot_outputs:
+      +schema: raw_datarobot_outputs
+      +materialized: table
+
+    derived_datarobot_outputs:
+      +schema: derived_datarobot_outputs
+      +materialized: table
+
+    transformed_datarobot_outputs:
+      +schema: transformed_datarobot_outputs
+      +materialized: table
+
+    derived_marketing_association:
+      +schema: derived_marketing_association
+      +materialized: table
+
+    published_products:
+      +schema: published_products
+      +materialized: view
+
+    transformed_campaigns:
+      +schema: transformed_campaigns
+      +materialized: table
+
+    published_surveys:
+      +schema: published_surveys
+      +materialized: table
+
+    transformed_surveys:
+      +schema: transformed_surveys
+      +materialized: table
+
+    derived_surveys:
+      +schema: derived_surveys
+      +materialized: table
+
+    raw_surveys:
+      +schema: raw_surveys
+      +materialized: table
+
+    transformed_marketing_association:
+      +schema: transformed_marketing_association
+      +materialized: table
+
+    loyaltyhub_poc:
+      +schema: loyaltyhub_poc
+      +materialized: table
+
+    transformed_customers:
+      +schema: transformed_customers
+      +materialized: table
