@@ -40,7 +40,7 @@ on:
     branches:
       - main
     paths:
-      -'dp_airflow/dbt/data_platform/**'
+      -'dbt/data_platform/**'
 
 # TODO: Should we have concurrency setting to control how many actions can run in parallel?
 
