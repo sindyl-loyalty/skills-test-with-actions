@@ -59,6 +59,7 @@ jobs:
       DBT_PROFILES_DIR: ./dp_airflow/dbt/data_platform
       DBT_PROJECT_DIR: ./dp_airflow/dbt/data_platform
       databricks_token: ${{ secrets.databricks_token }}
+      http_path: ${{ secrets.http_path }}
     
     # Each job has Steps - each step has its own process in the runner, so variables are not shared. See:
     # https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#jobsjob_idsteps
