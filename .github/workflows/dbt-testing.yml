@@ -40,7 +40,7 @@ on:
     branches:
       - main
     paths:
-      -'dbt/data_platform/**'
+      -'dbt/**'
 
 # TODO: Should we have concurrency setting to control how many actions can run in parallel?
 
