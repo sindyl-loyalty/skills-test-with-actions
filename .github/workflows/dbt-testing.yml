@@ -39,6 +39,8 @@ on:
       - ready_for_review
     branches:
       - main
+    paths:
+      -'dbt/**'
 
 # TODO: Should we have concurrency setting to control how many actions can run in parallel?
 
