@@ -11,6 +11,7 @@ data_platform:
     dev:
       catalog: "{{ env_var('catalog', 'qual') }}"
       host: loyalty-nz-terraform-databricks-production.cloud.databricks.com
+      http_path: "{{ env_var('http_path') }}"
       threads: "{{ env_var('dbt_threads', 20) }}"
       token: "{{ env_var('databricks_token') }}"
       type: databricks
