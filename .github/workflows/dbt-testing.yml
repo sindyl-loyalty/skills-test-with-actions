@@ -94,7 +94,7 @@ jobs:
         run: |
           echo Checked out branch: 
           git branch --show-current
-          find . -type f
+          find dp_airflow/dbt/ -type f
           
     # TODO: Lets have a step which installs DBT
       - name: Choose python version
