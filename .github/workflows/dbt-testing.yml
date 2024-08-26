@@ -27,10 +27,9 @@ on:
       branch:
         description: |
           The branch to check out for running DBT tests. 
-          By default, this checks out the code from the branch where the workflow was triggered.
+          By default, this will check out the code from the branch where the workflow was manually triggered.
         required: false
         type: string
-        default: ${{ github.ref_name }}
 
   # TODO: Once we are happy with the manual runs, we will need to define the github
   # or git actions that will trigger this Github Action .
@@ -75,10 +74,18 @@ jobs:
 
     # TODO: Lets have a step to checkout the code in the branch we want to update.
     #  (how do we do this with manual input?)
-      - name: Checkout Code
+
+      - name: Checkout Code for Pull Request
+        if: ${{ github.event_name == 'pull_request' }}
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.branch }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          
+      - name: Checkout Code for Manual Workflow Trigger
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.ref_name }}
 
     # TODO: Lets have a step which installs DBT
       - name: Choose python version
