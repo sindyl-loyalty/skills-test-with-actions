@@ -86,7 +86,17 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.branch || github.ref_name }}
-
+      
+      - name: Display Branch Name
+        run: |
+          echo Checked out branch: ${{ inputs.branch || github.ref_name }}
+      - name: Display Branch Name Too
+        run: |
+          echo Checked out branch: 
+          git branch --show-current
+          git log -1 --pretty=format:"%h - %s (%ci) <%an>"
+          ls -la
+          
     # TODO: Lets have a step which installs DBT
       - name: Choose python version
         uses: actions/setup-python@v5
