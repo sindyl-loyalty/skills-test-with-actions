@@ -94,8 +94,7 @@ jobs:
         run: |
           echo Checked out branch: 
           git branch --show-current
-          git log -1 --pretty=format:"%h - %s (%ci) <%an>"
-          ls -la
+          find . -type f
           
     # TODO: Lets have a step which installs DBT
       - name: Choose python version
