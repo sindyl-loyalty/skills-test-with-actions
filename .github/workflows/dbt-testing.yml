@@ -40,7 +40,7 @@ on:
   pull_request:
     types:
       - opened
-      -  synchronize
+      - synchronize
     branches:
       - main
     paths:
