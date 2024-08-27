@@ -89,7 +89,7 @@ jobs:
       
       - name: Display Branch Name
         run: |
-          echo Checked out branch: ${{ inputs.branch || github.event.pull_request.head. || github.ref }}
+          echo Checked out branch: ${{ inputs.branch || github.event.pull_request.head.ref || github.ref }}
       - name: Display Branch Name Too
         run: |
           echo Checked out branch: 
