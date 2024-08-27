@@ -27,7 +27,7 @@ on:
       branch:
         description: |
           The branch to check out for running DBT tests. 
-          By default, this will check out the code from the branch where the workflow was manually triggered.
+          If not specified, the workflow will check out the branch that was selected to run the workflow on. 
         required: false
         type: string
 
