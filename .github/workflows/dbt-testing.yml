@@ -90,9 +90,9 @@ jobs:
       - name: Display Branch Name
         run: |
           echo Checked out branch: ${{ inputs.branch || github.event.pull_request.head.ref || github.ref }}
-          inputs branch: ${{ inputs.branch }}
-          github event pull_request head ref: ${{ github.event.pull_request.head.ref }}
-          github ref: ${{ github.ref }}
+          echo inputs branch: ${{ inputs.branch }}
+          echo github event pull_request head ref: ${{ github.event.pull_request.head.ref }}
+          echo github ref: ${{ github.ref }}
       - name: Display Branch Name Too
         run: |
           echo Checked out branch: 
