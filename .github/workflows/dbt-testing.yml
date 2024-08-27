@@ -93,13 +93,14 @@ jobs:
           echo inputs branch: ${{ inputs.branch }}
           echo github event pull_request head ref: ${{ github.event.pull_request.head.ref }}
           echo github ref: ${{ github.ref }}
-      - name: Display Branch Name Too
+          
+      - name: Get Branch Name
         run: |
-          echo Checked out branch: 
-          git branch --show-current
+          echo "branch_name=$(git branch --show-current)" >> $GITHUB_ENV
+          echo "Checked out branch: $branch_name"
 
       - name: Fetch Main Branch
-        if: ${{ inputs.branch != 'main' }}
+        if: ${{ env.branch_name != 'main' }}
         run: |
           git fetch origin main:main
       
