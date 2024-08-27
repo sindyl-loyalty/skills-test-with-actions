@@ -86,18 +86,18 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.branch || github.event.pull_request.head.ref || github.ref }}
-      
-      - name: Display Branch Name
-        run: |
-          echo Checked out branch: ${{ inputs.branch || github.event.pull_request.head.ref || github.ref }}
-          echo inputs branch: ${{ inputs.branch }}
-          echo github event pull_request head ref: ${{ github.event.pull_request.head.ref }}
-          echo github ref: ${{ github.ref }}
-          
+
       - name: Get Branch Name
         run: |
-          echo "branch_name=$(git branch --show-current)" >> $GITHUB_ENV
-          echo "Checked out branch: $branch_name"
+          echo "branch_name=$(git branch --show-current)" >> $GITHUB_ENV   
+          
+      - name: Display Branch Name
+        run: |
+          echo Checked out branch : ${{ env.branch_name }}
+          # echo Checked out branch : ${{ inputs.branch || github.event.pull_request.head.ref || github.ref }}
+          # echo inputs branch: ${{ inputs.branch }}
+          # echo github event pull_request head ref: ${{ github.event.pull_request.head.ref }}
+          # echo github ref: ${{ github.ref }}        
 
       - name: Fetch Main Branch
         if: ${{ env.branch_name != 'main' }}
