@@ -75,14 +75,14 @@ jobs:
     # TODO: Lets have a step to checkout the code in the branch we want to update.
     #  (how do we do this with manual input?)
 
-      - name: Checkout Code for Pull Request
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
+      # - name: Checkout Code for Pull Request
+      #   if: ${{ github.event_name == 'pull_request' }}
+      #   uses: actions/checkout@v4
+      #   with:
+      #     ref: ${{ github.event.pull_request.head.sha }}
           
-      - name: Checkout Code for Manual Workflow Trigger
-        if: ${{ github.event_name != 'pull_request' }}
+      - name: Checkout Code 
+        # if: ${{ github.event_name != 'pull_request' }}
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.branch || github.ref }}
