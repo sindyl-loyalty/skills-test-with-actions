@@ -27,7 +27,7 @@ on:
       branch:
         description: |
           The branch to check out for running DBT tests.
-          If not specified, the workflow will check out the branch that was selected to run the workflow from drop down.
+          By default, the workflow will check out the branch that was selected to run the workflow on (from drop down).
         required: false
         type: string
 
@@ -105,8 +105,7 @@ jobs:
           git fetch origin main:main
       
       - name: Show Changed Files Between Main and Checked-Out Branch in dp_airflow/dbt/
-        run: |
-          echo "Changed files between main and checked-out branch in the dp_airflow/dbt/ directory:"
+        run: |          
           git diff main -- dp_airflow/dbt/
           # git diff --name-only main -- dp_airflow/dbt/
       
