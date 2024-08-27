@@ -26,8 +26,8 @@ on:
         type: string
       branch:
         description: |
-          The branch to check out for running DBT tests. 
-          If not specified, the workflow will check out the branch that was selected to run the workflow from (drop down).
+          The branch to check out for running DBT tests.
+          If not specified, the workflow will check out the branch that was selected to run the workflow from drop down.
         required: false
         type: string
 
