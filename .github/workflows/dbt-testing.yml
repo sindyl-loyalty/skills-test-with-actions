@@ -97,16 +97,16 @@ jobs:
         run: |
           echo Checked out branch: 
           git branch --show-current
-      - name: List All Files in dp_airflow/dbt/ in Checked Out Branch
-        run: |
-          echo "Listing all files in the dp_airflow/dbt/ directory:"
-          find dp_airflow/dbt/ -type f
 
-      - name: Show Changed Files in dp_airflow/dbt/
+      - name: Fetch Main Branch
         run: |
-          echo "Changed files in the dp_airflow/dbt/ directory:"
-          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- dp_airflow/dbt/
-
+          git fetch origin main:main
+      
+      - name: Show Changed Files Between Main and Checked-Out Branch in dp_airflow/dbt/
+        run: |
+          echo "Changed files between main and checked-out branch in the dp_airflow/dbt/ directory:"
+          git diff --name-only main -- dp_airflow/dbt/
+      
       # TODO: Lets have a step which installs DBT
       - name: Choose python version
         uses: actions/setup-python@v5
