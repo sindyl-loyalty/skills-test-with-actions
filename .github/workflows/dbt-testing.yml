@@ -100,7 +100,7 @@ jobs:
 
       - name: Fetch Main Branch
         run: |
-          git fetch origin main:main
+          git fetch origin main
       
       - name: Show Changed Files Between Main and Checked-Out Branch in dp_airflow/dbt/
         run: |
