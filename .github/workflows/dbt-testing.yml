@@ -99,6 +99,7 @@ jobs:
           git branch --show-current
 
       - name: Fetch Main Branch
+        if: ${{ inputs.branch != 'main' }}
         run: |
           git fetch origin main
       
