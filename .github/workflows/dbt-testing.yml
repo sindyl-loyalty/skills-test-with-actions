@@ -80,16 +80,16 @@ jobs:
       #   uses: actions/checkout@v4
       #   with:
       #     ref: ${{ github.event.pull_request.head.sha }}
-          
-      - name: Checkout Code 
-        # if: ${{ github.event_name != 'pull_request' }}
+      # if: ${{ github.event_name != 'pull_request' }}
+      
+      - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.branch || github.ref }}
+          ref: ${{ inputs.branch || github.event.pull_request.head.ref || github.ref }}
       
       - name: Display Branch Name
         run: |
-          echo Checked out branch: ${{ inputs.branch || github.ref }}
+          echo Checked out branch: ${{ inputs.branch || github.event.pull_request.head. || github.ref }}
       - name: Display Branch Name Too
         run: |
           echo Checked out branch: 
