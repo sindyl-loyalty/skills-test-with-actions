@@ -24,26 +24,26 @@ on:
         description: 'This is just a Dummy Input for Manual Runs'
         required: false
         type: string
-      # branch:
-      #   description: |
-      #     The branch to check out for running DBT tests.
-      #     By default, the workflow will check out the branch that was selected to run the workflow on (from drop down).
-      #   required: false
-      #   type: string
+      branch:
+        description: |
+          The branch to check out for running DBT tests.
+          By default, The workflow check out the branch that the workflow is run on (chosen from drop down).
+        required: false
+        type: string
 
   # TODO: Once we are happy with the manual runs, we will need to define the github
   # or git actions that will trigger this Github Action .
 
   #Workflows will not run on pull_request activity if the pull request has a merge conflict.
   #By default, a workflow only runs when a pull_request event's activity type is opened, synchronize, or reopened.
-  pull_request:
-    types:
-      - opened
-      - synchronize
-    branches:
-      - main
-    paths:
-      - 'dp_airflow/dbt/**'
+#  pull_request:
+#    types:
+#      - opened
+#      - synchronize
+#    branches:
+#      - main
+#    paths:
+#     - 'dp_airflow/dbt/**'
 
 # TODO: Should we have concurrency setting to control how many actions can run in parallel?
 
@@ -74,62 +74,49 @@ jobs:
 
     # TODO: Lets have a step to checkout the code in the branch we want to update.
     #  (how do we do this with manual input?)
-
-      # - name: Checkout Code for Pull Request
-      #   if: ${{ github.event_name == 'pull_request' }}
-      #   uses: actions/checkout@v4
-      #   with:
-      #     ref: ${{ github.event.pull_request.head.sha }}
-      # if: ${{ github.event_name != 'pull_request' }}
-      
       - name: Checkout Code
         uses: actions/checkout@v4
-        # with:
-        #   ref: ${{ inputs.branch || github.event.pull_request.head.ref || github.ref }}
-
-      - name: Get Branch Name
+        with:
+          ref: ${{ inputs.branch || github.event.pull_request.head.ref || github.ref }}
+      
+      - name: Get checked out branch name
         run: |
-          echo "branch_name=$(git branch --show-current)" >> $GITHUB_ENV   
-          
-      - name: Display Branch Name
-        run: |
-          echo Checked out branch : ${{ env.branch_name }}
-          # echo Checked out branch : ${{ inputs.branch || github.event.pull_request.head.ref || github.ref }}
-          # echo inputs branch: ${{ inputs.branch }}
-          # echo github event pull_request head ref: ${{ github.event.pull_request.head.ref }}
-          # echo github ref: ${{ github.ref }}        
-
-      - name: Fetch Main Branch
+          echo "branch_name=$(git branch --show-current)" >> $GITHUB_ENV
+            
+      - name: Fetch main branch
         if: ${{ env.branch_name != 'main' }}
         run: |
-          git fetch origin main:main
+            git fetch origin main:main
       
-      - name: Show Changed Files Between Main and Checked-Out Branch in dp_airflow/dbt/
-        run: |          
-          git diff main -- dp_airflow/dbt/
-          # git diff --name-only main -- dp_airflow/dbt/
-      
-      # TODO: Lets have a step which installs DBT
+      - name: Show changes between main and checked out branch
+        run: |
+          git diff --name-only main -- dp_airflow/dbt/   
+
+    # TODO: Lets have a step which installs DBT
       - name: Choose python version
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      # - name: Install dbt and databricks adapter
-      #   run: |
-      #     python -m pip install dbt-core dbt-databricks
+      - name: Install dbt and databricks adapter
+        run: |
+          python -m pip install dbt-core dbt-databricks
 
     #   - name: Verify dbt installation
     #     run: |
     #       dbt --version
     #       dbt deps --target predeployment --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
 
-    # # TODO: Can we use that code to connect to Databricks?
+    # # # TODO: Can we use that code to connect to Databricks?
     # # DBT handles connections to Databricks using the credentials provided in the profiles.yml file
-    #   - name: Check databricks connection
+    #   - name: Check connection
     #     run: |
     #       dbt debug --target predeployment --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
-
+      
+    #   - name: TEMP Run dbt tests 
+    #     run: |
+    #       dbt test -m published_member_survey_questions_dictionary
+    
     # TODO: How can we detect which models have changed?
 
     # TODO: How can we clone tables using the Databricks APIs for the tests we will run?
