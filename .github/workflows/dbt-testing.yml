@@ -24,12 +24,12 @@ on:
         description: 'This is just a Dummy Input for Manual Runs'
         required: false
         type: string
-      branch:
-        description: |
-          The branch to check out for running DBT tests.
-          If not specified, the workflow will check out the branch that was selected to run the workflow from drop down.
-        required: false
-        type: string
+      # branch:
+      #   description: |
+      #     The branch to check out for running DBT tests.
+      #     By default, the workflow will check out the branch that was selected to run the workflow on (from drop down).
+      #   required: false
+      #   type: string
 
   # TODO: Once we are happy with the manual runs, we will need to define the github
   # or git actions that will trigger this Github Action .
@@ -84,8 +84,8 @@ jobs:
       
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.branch || github.event.pull_request.head.ref || github.ref }}
+        # with:
+        #   ref: ${{ inputs.branch || github.event.pull_request.head.ref || github.ref }}
 
       - name: Get Branch Name
         run: |
@@ -105,9 +105,8 @@ jobs:
           git fetch origin main:main
       
       - name: Show Changed Files Between Main and Checked-Out Branch in dp_airflow/dbt/
-        run: |
-          echo "Changed files between main and checked-out branch in the dp_airflow/dbt/ directory:"
-          git diff --summary main -- dp_airflow/dbt/
+        run: |          
+          git diff main -- dp_airflow/dbt/
           # git diff --name-only main -- dp_airflow/dbt/
       
       # TODO: Lets have a step which installs DBT
