@@ -90,7 +90,8 @@ jobs:
       
       - name: Show changes between main and checked out branch
         run: |
-          git diff --name-only main -- dp_airflow/dbt/   
+          echo checked out branch : ${{ env.branch_name }}
+          git diff --name-only main -- dp_airflow/dbt/ 
 
     # TODO: Lets have a step which installs DBT
       - name: Choose python version
