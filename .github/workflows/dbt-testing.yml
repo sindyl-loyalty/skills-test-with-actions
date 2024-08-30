@@ -36,14 +36,14 @@ on:
 
   #Workflows will not run on pull_request activity if the pull request has a merge conflict.
   #By default, a workflow only runs when a pull_request event's activity type is opened, synchronize, or reopened.
- pull_request:
-   types:
-     - opened
-     - synchronize
-   branches:
-     - main
-   paths:
-     - 'dp_airflow/dbt/**'
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    branches:
+       - main
+    paths:
+       - 'dp_airflow/dbt/**'
 
 # TODO: Should we have concurrency setting to control how many actions can run in parallel?
 
