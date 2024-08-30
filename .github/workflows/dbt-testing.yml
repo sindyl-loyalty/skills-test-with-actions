@@ -88,11 +88,11 @@ jobs:
         if: ${{ env.branch_name != 'main' }}
         run: |
           git fetch origin main:main
-      
+
+    # Comparing changes between the checked out branch and main branch
       - name: Get DBT models changed
         run: |
           echo Checked out branch : ${{ env.branch_name }}
-          echo Comparing changes between the checked out branch and main branch:
           echo "models=$(git diff --name-only main -- dp_airflow/dbt/data_platform/models | grep '\.sql$' | uniq)" >> $GITHUB_ENV
           
       - name: Get DBT tests changed
@@ -101,7 +101,7 @@ jobs:
 
       - name: Get DBT macros changed
         run: |
-          ehco "macros=$(git diff --name-only main -- dp_airflow/dbt/data_platform/macros | grep '\.sql$' | uniq)" >> $GITHUB_ENV
+          echo "macros=$(git diff --name-only main -- dp_airflow/dbt/data_platform/macros | grep '\.sql$' | uniq)" >> $GITHUB_ENV
 
       - name: Display changes
         run: |
