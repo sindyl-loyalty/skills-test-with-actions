@@ -97,7 +97,8 @@ jobs:
       
       - name: Get models associated with updated DBT tests 
         run: |
-          echo "tests=$(git diff --name-only main -- dp_airflow/dbt/data_platform/tests | grep '\.sql$' | uniq | sed 's/\.sql$//' | tr '\n' ' ')" >> $GITHUB_ENV 
+          echo "tests_yml=$(git diff --name-only main -- dp_airflow/dbt/data_platform/models | grep '\.yml$' | uniq | sed 's/\.yml$//' | tr '\n' ' ')" >> $GITHUB_ENV 
+          echo "tests_sql=$(git diff --name-only main -- dp_airflow/dbt/data_platform/tests | grep '\.sql$' | uniq | sed 's/\.sql$//' | tr '\n' ' ')" >> $GITHUB_ENV
 
       - name: Get models to run if DBT macros have updated
         run: |
@@ -106,7 +107,8 @@ jobs:
       - name: Display files changed
         run: |
           echo "Models: ${{env.models}}"
-          echo "Tests:  ${{env.tests}}"
+          echo "Tests in yml:  ${{env.tests_yml}}"
+          echo "Tests in sql:  ${{env.tests_sql}}"
           echo "Macros: ${{env.macros}}"
     
     # TODO: Lets have a step which installs DBT
