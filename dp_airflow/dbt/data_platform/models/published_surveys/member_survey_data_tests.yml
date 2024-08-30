@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: published_member_survey_codes_dictionary
+    columns:
+      - name: field_name
+        data_tests:
+          - not_null
+      - name: code 
+        data_tests:
+          - not_null
+
+  - name: published_member_survey_data
+    columns:
+      - name: field_name
+        data_tests:
+          - not_null
+      - name: member_id 
+        data_tests:
+          - not_null
+
+  - name: published_member_survey_questions_dictionary
+    columns:
+      - name: field_name
+        data_tests:
+          - not_null
+
+# custom tests
+data_tests:
+  - name: member_survey_custom_tests
+    description: "singular data test to validate the structure of specified fields"
+    file: member_survey_custom_tests.sql
