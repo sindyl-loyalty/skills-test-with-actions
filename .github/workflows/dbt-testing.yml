@@ -36,14 +36,14 @@ on:
 
   #Workflows will not run on pull_request activity if the pull request has a merge conflict.
   #By default, a workflow only runs when a pull_request event's activity type is opened, synchronize, or reopened.
-#  pull_request:
-#    types:
-#      - opened
-#      - synchronize
-#    branches:
-#      - main
-#    paths:
-#      - 'dp_airflow/dbt/**'
+ pull_request:
+   types:
+     - opened
+     - synchronize
+   branches:
+     - main
+   paths:
+     - 'dp_airflow/dbt/**'
 
 # TODO: Should we have concurrency setting to control how many actions can run in parallel?
 
@@ -89,11 +89,25 @@ jobs:
         run: |
           git fetch origin main:main
       
-      - name: Identify changed DBT models
+      - name: Get DBT models changed
         run: |
           echo Checked out branch : ${{ env.branch_name }}
           echo Comparing changes between the checked out branch and main branch:
-          git diff --name-only main -- dp_airflow/dbt/data_platform/models | grep '\.sql$' | uniq
+          echo "models=$(git diff --name-only main -- dp_airflow/dbt/data_platform/models | grep '\.sql$' | uniq)" >> $GITHUB_ENV
+          
+      - name: Get DBT tests changed
+        run: |
+          echo "tests=$(git diff --name-only main -- dp_airflow/dbt/data_platform/tests | grep '\.sql$' | uniq)" >> $GITHUB_ENV 
+
+      - name: Get DBT macros changed
+        run: |
+          ehco "macros=$(git diff --name-only main -- dp_airflow/dbt/data_platform/macros | grep '\.sql$' | uniq)" >> $GITHUB_ENV
+
+      - name: Display changes
+        run: |
+          echo "Models: ${{env.models}}"
+          echo "Tests:  ${{env.tests}}"
+          echo "Macros: ${{env.macros}}"
     
     # TODO: Lets have a step which installs DBT
       - name: Choose python version
@@ -101,24 +115,24 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dbt and databricks adapter
-        run: |
-          python -m pip install dbt-core dbt-databricks
+    #   - name: Install dbt and databricks adapter
+    #     run: |
+    #       python -m pip install dbt-core dbt-databricks
 
-      - name: Verify dbt installation
-        run: |
-          dbt --version
-          dbt deps --target predeployment --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
+    #   - name: Verify dbt installation
+    #     run: |
+    #       dbt --version
+    #       dbt deps --target predeployment --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
 
-    # TODO: Can we use that code to connect to Databricks?
-    # DBT handles connections to Databricks using the credentials provided in the profiles.yml file
-      - name: Check databricks connection
-        run: |
-          dbt debug --target predeployment --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
+    # # TODO: Can we use that code to connect to Databricks?
+    # # DBT handles connections to Databricks using the credentials provided in the profiles.yml file
+    #   - name: Check databricks connection
+    #     run: |
+    #       dbt debug --target predeployment --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
     
-      - name: TEMP Run dbt tests
-        run: |
-          dbt test --target predeployment -m transformed_member_survey_questions_dictionary+
+    #   - name: TEMP Run dbt tests
+    #     run: |
+    #       dbt test --target predeployment -m transformed_member_survey_questions_dictionary+
 
     # TODO: How can we clone tables using the Databricks APIs for the tests we will run?
 
