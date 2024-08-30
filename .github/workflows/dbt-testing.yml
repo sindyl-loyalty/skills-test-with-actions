@@ -93,18 +93,15 @@ jobs:
     # Comparing changes between the checked out branch and main branch
       - name: Get updated DBT models 
         run: |
-          echo "models=$(git diff --name-only main -- dp_airflow/dbt/data_platform/models | grep '\.sql$' | uniq | sed 's/\.sql$//' | tr '\n' ' ')" 
-                >> $GITHUB_ENV
+          echo "models=$(git diff --name-only main -- dp_airflow/dbt/data_platform/models | grep '\.sql$' | uniq | sed 's/\.sql$//' | tr '\n' ' ')" >> $GITHUB_ENV
       
       - name: Get models associated with updated DBT tests 
         run: |
-          echo "tests=$(git diff --name-only main -- dp_airflow/dbt/data_platform/tests | grep '\.sql$' | uniq | sed 's/\.sql$//' | tr '\n' ' ')" 
-                >> $GITHUB_ENV 
+          echo "tests=$(git diff --name-only main -- dp_airflow/dbt/data_platform/tests | grep '\.sql$' | uniq | sed 's/\.sql$//' | tr '\n' ' ')" >> $GITHUB_ENV 
 
       - name: Get models to run if DBT macros have updated
         run: |
-          echo "macros=$(git diff --name-only main -- dp_airflow/dbt/data_platform/macros | grep '\.sql$' | uniq | sed 's/\.sql$//' | tr '\n' ' ')" 
-                >> $GITHUB_ENV
+          echo "macros=$(git diff --name-only main -- dp_airflow/dbt/data_platform/macros | grep '\.sql$' | uniq | sed 's/\.sql$//' | tr '\n' ' ')" >> $GITHUB_ENV
 
       - name: Display files changed
         run: |
