@@ -93,7 +93,7 @@ jobs:
     # Comparing changes between the checked out branch and main branch
       - name: Get updated DBT models 
         run: |
-          echo "models=$(git diff --name-only main -- dp_airflow/dbt/data_platform/models | grep '\.sql$' | uniq | sed 's|.*/||; s/\.sql$//; s/^/+/g' | tr '\n' ' ')" >> $GITHUB_ENV
+          echo "models=$(git diff --name-only main -- 'dp_airflow/dbt/data_platform/models/*.sql' | uniq | xargs -n1 basename )" >> $GITHUB_ENV
       
       - name: Get models associated with updated DBT tests 
         run: |
