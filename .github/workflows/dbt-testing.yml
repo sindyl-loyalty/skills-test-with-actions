@@ -97,6 +97,15 @@ jobs:
           echo Checked out branch: ${{ env.branch_name }}       
           echo "changed_models=$(git diff --name-only main -- dp_airflow/dbt/data_platform/models | awk -F'/' '{print $NF}' | sed 's/.sql//' | sort | uniq)" >> $GITHUB_ENV
 
+      - name: Any changed DBT models?
+        run: |
+          if [ "${{ env.changed_models }}" = "" ]; then 
+          echo No changed models.. Bye 
+          exit 0
+          else
+          echo Changed models: ${{ env.changed_models }}
+          fi
+          
     # TODO: Lets have a step which installs DBT
       - name: Choose python version
         uses: actions/setup-python@v5
@@ -128,7 +137,6 @@ jobs:
     # TODO: How can we run the DBT tests for the models that are updated?
     # TODO: Should we run the DBT tests for downstream tables on clones?
       - name: Run tests for changed and downstream models on clones
-        if: ${{ env.changed_models != '' }}
         run: |
           echo ${{ env.changed_models}} | while read -r model; do
           echo "dbt build -m $model+"
