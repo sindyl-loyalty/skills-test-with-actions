@@ -95,7 +95,8 @@ jobs:
       - name: Get changed DBT models
         run: |
           echo Checked out branch: ${{ env.branch_name }}       
-          echo "changed_models=$(git diff --name-only main -- dp_airflow/dbt/data_platform/models | awk -F'/' '{print $NF}' | sed 's/.sql//' | sort | uniq)" >> $GITHUB_ENV
+          echo "changed_models=$(git diff --name-only main -- dp_airflow/dbt/data_platform/models 
+                | awk -F'/' '{print $NF}' | sed 's/.sql//' | sort | uniq)" >> $GITHUB_ENV
     
     # TODO: Lets have a step which installs DBT
       - name: Choose python version
@@ -119,7 +120,7 @@ jobs:
     #       dbt debug --target predeployment --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
 
     # TODO: How can we clone tables using the Databricks APIs for the tests we will run?
-    # It seems that to skip the rest of the steps during a job, an if condition has to be added to all of the steps or steps have to be moved to another job 
+    # It seems that to early exit the job without failing the job, an if condition has to be added to all of the steps or steps have to be moved to another job 
       - name: Databricks cloning from prod to qual
         if: ${{ env.changed_models != '' }}
         run: |
