@@ -100,10 +100,10 @@ jobs:
       - name: Any changed DBT models?
         run: |
           if [ "${{ env.changed_models }}" = "" ]; then 
-          echo No changed models.. Bye 
+          echo "No changed models.. Bye"
           exit 0
           else
-          echo Changed models: ${{ env.changed_models }}
+          echo "Changed models: ${{ env.changed_models }}"
           fi
           
     # TODO: Lets have a step which installs DBT
