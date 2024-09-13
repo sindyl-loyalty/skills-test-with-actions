@@ -96,16 +96,7 @@ jobs:
         run: |
           echo Checked out branch: ${{ env.branch_name }}       
           echo "changed_models=$(git diff --name-only main -- dp_airflow/dbt/data_platform/models | awk -F'/' '{print $NF}' | sed 's/.sql//' | sort | uniq)" >> $GITHUB_ENV
-
-      - name: Any changed DBT models?
-        run: |
-          if [ "${{ env.changed_models }}" = "" ]; then 
-          echo "No changed models.. Bye"
-          exit 0
-          else
-          echo "Changed models: ${{ env.changed_models }}"
-          fi
-          
+    
     # TODO: Lets have a step which installs DBT
       - name: Choose python version
         uses: actions/setup-python@v5
@@ -128,20 +119,20 @@ jobs:
     #       dbt debug --target predeployment --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
 
     # TODO: How can we clone tables using the Databricks APIs for the tests we will run?
+    # It seems that to skip the rest of the steps during a job, an if condition has to be added to all of the steps or steps have to be moved to another job 
       - name: Databricks cloning from prod to qual
         if: ${{ env.changed_models != '' }}
         run: |
           python ${{ env.CLONE_PY_DIR }}
-          
 
     # TODO: How can we run the DBT tests for the models that are updated?
     # TODO: Should we run the DBT tests for downstream tables on clones?
       - name: Run tests for changed and downstream models on clones
+        if: ${{ env.changed_models != '' }}
         run: |
           echo ${{ env.changed_models}} | while read -r model; do
           echo "dbt build -m $model+"
           dbt build --target predeployment -m "$model+"
-
 
     # TODO: How can we clean up the cloned tables we have created?
     # A new workflow that run the Databricks cloning step should create or replace the cloned tables 
