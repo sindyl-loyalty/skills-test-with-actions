@@ -95,7 +95,7 @@ jobs:
       - name: Get changed DBT models
         run: |
           echo Checked out branch: ${{ env.branch_name }}       
-          echo "changed_models=$(git diff --name-only main -- dp_airflow/dbt/data_platform/models 
+          echo "changed_models=$(git diff --name-only main -- dp_airflow/dbt/data_platform/models \
                 | awk -F'/' '{print $NF}' | sed 's/.sql//' | sort | uniq)" >> $GITHUB_ENV
     
     # TODO: Lets have a step which installs DBT
