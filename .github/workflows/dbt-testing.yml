@@ -91,8 +91,9 @@ jobs:
         run: |
           git fetch origin main:main
     
-    # Comparing files between the checked out branch and main branch  
-      - name: Get changed files
+    # Comparing files between the checked out branch and main branch 
+    # TODO: We may also want to run test for updated tests and macros etc
+      - name: Get changed models
         run: |
           echo Checked out branch: ${{ env.branch_name }}
           git diff --name-only main -- "$DBT_PROJECT_DIR/models" \
@@ -122,19 +123,19 @@ jobs:
 
     # TODO: How can we clone tables using the Databricks APIs for the tests we will run?
     # It seems that to early exit the job without failing the job, an if condition has to be added to all of the steps or steps have to be moved to another job 
-      - name: Databricks cloning from prod to qual
-        if: ${{ env.changed_models != '' }}
-        run: |
-          python ${{ env.CLONE_PY_DIR }}
+      # - name: Databricks cloning from prod to qual
+      #   if: ${{ env.changed_models != '' }}
+      #   run: |
+      #     python ${{ env.CLONE_PY_DIR }}
 
     # TODO: How can we run the DBT tests for the models that are updated?
     # TODO: Should we run the DBT tests for downstream tables on clones?
       - name: Run tests for changed and downstream models on clones
         if: ${{ env.changed_models != '' }}
         run: |
-          echo ${{ env.changed_models}} | while read -r model; do
-          echo "dbt build -m $model+"
-          dbt build --target predeployment -m "$model+"
+          for model in ${{ env.changed_models }}; do
+          dbt build --target predeployment -m "$model+" --verbose
+          done
 
     # TODO: How can we clean up the cloned tables we have created?
     # A new workflow that run the Databricks cloning step should create or replace the cloned tables 
