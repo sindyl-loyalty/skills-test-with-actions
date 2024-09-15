@@ -97,9 +97,14 @@ jobs:
       - name: Get changed models
         run: |
           echo Checked out branch: ${{ env.branch_name }}
-          git diff --name-only main -- "$DBT_PROJECT_DIR/models" \
-          | grep '.sql$' | xargs -n 1 basename | sed 's/.sql//' | tr '\n' ' ' \
-          | tee >(echo "changed_models=$(cat)" >> $GITHUB_ENV)
+          
+          changed_models=$(git diff --name-only main -- "$DBT_PROJECT_DIR/models" | grep '.sql$')
+          models=""
+          while read -r model; do
+          model_name=$(basename "$model" .sql)
+          models="$models $model_name"
+          done <<< "$changed_models"
+          echo "changed_models=$models" >> $GITHUB_ENV          
     
     # TODO: Lets have a step which installs DBT
       - name: Choose python version
@@ -135,7 +140,7 @@ jobs:
         if: ${{ env.changed_models != '' }}
         run: |
           for model in ${{ env.changed_models }}; do
-          dbt build --target local -m "$model+"
+          dbt test --target local -m "$model+"
           done
 
     # TODO: How can we clean up the cloned tables we have created?
