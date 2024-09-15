@@ -91,13 +91,14 @@ jobs:
         run: |
           git fetch origin main:main
     
-    # Comparing models changed between the checked out branch and main branch  
-      - name: Get changed DBT models
+    # Comparing files between the checked out branch and main branch  
+      - name: Get changed files
         run: |
-          echo Checked out branch: ${{ env.branch_name }}       
-          echo "changed_models=$(git diff --name-only main --"$DBT_PROJECT_DIR"/models \
-                | awk -F'/' '{print $NF}' | sed 's/.sql//' \
-                | tr '\n' ' ')" >> $GITHUB_ENV
+          echo Checked out branch: ${{ env.branch_name }}
+
+          changed_models=$(git diff --name-only main -- "$DBT_PROJECT_DIR/models" \
+            | grep '.sql$' | xargs -n 1 basename | sed 's/.sql//' | tr '\n' ' '\
+            | tee >(echo "changed_models=$(cat)" >> $GITHUB_ENV)
     
     # TODO: Lets have a step which installs DBT
       - name: Choose python version
