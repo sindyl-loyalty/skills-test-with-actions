@@ -134,7 +134,7 @@ jobs:
         if: ${{ env.changed_models != '' }}
         run: |
           for model in ${{ env.changed_models }}; do
-          dbt build --target predeployment -m "$model+" --verbose
+          dbt build --target predeployment -m "$model+"
           done
 
     # TODO: How can we clean up the cloned tables we have created?
