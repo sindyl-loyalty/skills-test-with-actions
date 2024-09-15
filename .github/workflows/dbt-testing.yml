@@ -99,12 +99,12 @@ jobs:
           echo Checked out branch: ${{ env.branch_name }}
           
           changed_models=""
-          git diff --name-only main -- "$DBT_PROJECT_DIR/models" | grep '.sql$' \
-          | while read -r model; do 
+          while read -r model; do 
               model_name=$(basename "$model" .sql)
               changed_models="$changed_models $model_name"
-            done
+            done << (git diff --name-only main -- "$DBT_PROJECT_DIR/models" | grep '.sql$')
           echo "changed_models=$changed_models" >> $GITHUB_ENV
+          echo "$changed_models"
     
     # TODO: Lets have a step which installs DBT
       - name: Choose python version
