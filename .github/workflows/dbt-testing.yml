@@ -111,10 +111,10 @@ jobs:
         run: |
           python -m pip install dbt-core dbt-databricks
 
-    #   - name: Verify dbt installation
-    #     run: |
-    #       dbt --version
-    #       dbt deps --target predeployment --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
+      - name: Install dbt package dependencies
+        run: |
+          dbt --version
+          dbt deps --target local --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
 
     # # TODO: Can we use that code to connect to Databricks?
     # # DBT handles connections to Databricks using the credentials provided in the profiles.yml file
