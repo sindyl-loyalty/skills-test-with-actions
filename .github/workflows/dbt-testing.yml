@@ -66,7 +66,6 @@ jobs:
       CLONE_PY_DIR: ./dp_airflow/dbt/data_platform/databricks_cloning_for_automated_testing.py
       DATABRICKS_HOST_RED: ${{ secrets.databricks_host_red }}
       DATABRICKS_TOKEN_RED: ${{ secrets.databricks_token_red }}
-      databricks_token: ${{ secrets.databricks_token }}
 
     # Each job has Steps - each step has its own process in the runner, so variables are not shared. See:
     # https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#jobsjob_idsteps
@@ -92,15 +91,12 @@ jobs:
         run: |
           git fetch origin main:main
     
-    # Comparing files between the checked out branch and main branch 
-    # TODO: We may also want to run test for updated tests and macros etc
-      - name: Get changed models
+    # Comparing models changed between the checked out branch and main branch  
+      - name: Get changed DBT models
         run: |
-          echo Checked out branch: ${{ env.branch_name }}
-          git diff --name-only main -- "$DBT_PROJECT_DIR/models" \
-          | grep '.sql$' | xargs -n 1 basename | sed 's/.sql//' | tr '\n' ' ' \
-          | tee >(echo "changed_models=$(cat)" >> $GITHUB_ENV)
-    
+          echo Checked out branch: ${{ env.branch_name }}       
+          echo "changed_models=$(git diff --name-only main -- dp_airflow/dbt/data_platform/models | awk -F'/' '{print $NF}' | sed 's/.sql//' | sort | uniq)" >> $GITHUB_ENV
+
     # TODO: Lets have a step which installs DBT
       - name: Choose python version
         uses: actions/setup-python@v5
@@ -111,35 +107,41 @@ jobs:
         run: |
           python -m pip install dbt-core dbt-databricks
 
-      - name: Install dbt package dependencies
+      - name: Verify dbt installation
         run: |
           dbt --version
-          dbt deps --target local --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
+          dbt deps --target predeployment --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
 
-    # # TODO: Can we use that code to connect to Databricks?
-    # # DBT handles connections to Databricks using the credentials provided in the profiles.yml file
-    #   - name: Check databricks connection
-    #     run: |
-    #       dbt debug --target predeployment --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
+    # TODO: Can we use that code to connect to Databricks?
+    # DBT handles connections to Databricks using the credentials provided in the profiles.yml file
+      - name: Check databricks connection
+        run: |
+          dbt debug --target predeployment --profiles-dir "$DBT_PROFILES_DIR" --project-dir "$DBT_PROJECT_DIR"
 
     # TODO: How can we clone tables using the Databricks APIs for the tests we will run?
-    # It seems that to early exit the job without failing the job, an if condition has to be added to all of the steps or steps have to be moved to another job 
-      # - name: Databricks cloning from prod to qual
-      #   if: ${{ env.changed_models != '' }}
-      #   run: |
-      #     python ${{ env.CLONE_PY_DIR }}
+      - name: Databricks cloning from prod to qual
+        if: ${{ env.changed_models != '' }}
+        run: |
+          python ${{ env.CLONE_PY_DIR }}
+          
 
     # TODO: How can we run the DBT tests for the models that are updated?
     # TODO: Should we run the DBT tests for downstream tables on clones?
       - name: Run tests for changed and downstream models on clones
         if: ${{ env.changed_models != '' }}
         run: |
-          for model in ${{ env.changed_models }}; do
-          dbt build --target local -m "$model+"
-          done
+          echo ${{ env.changed_models}} | while read -r model; do
+          echo "dbt build -m $model+"
+          dbt build --target predeployment -m "$model+"
+
 
     # TODO: How can we clean up the cloned tables we have created?
     # A new workflow that run the Databricks cloning step should create or replace the cloned tables 
 
     # # TODO: How can we fail the github action if the tests fail?
     # DBT tests fail should fail the Run DBT tests step and the workflow
+    #   - name: Fail Action on Test Failure
+    #     if: failure()
+    #     run: |
+    #       echo "Tests have failed"
+    #       exit 1
