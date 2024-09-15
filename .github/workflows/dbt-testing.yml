@@ -97,9 +97,13 @@ jobs:
       - name: Get changed models
         run: |
           echo Checked out branch: ${{ env.branch_name }}
-          git diff --name-only main -- "$DBT_PROJECT_DIR/models" \
-          | grep '.sql$' | xargs -n 1 basename | sed 's/.sql//' | tr '\n' ' ' \
-          | tee >(echo "changed_models=$(cat)" >> $GITHUB_ENV)
+          
+          changed_models=$(git diff --name-only main -- "$DBT_PROJECT_DIR/models" | grep '.sql$' \ 
+            | while read -r file; do
+              basename "$file" .sql
+              done 
+            | tr '\n' ' ')
+          echo "changed_models=$changed_models" >> $GITHUB_ENV
     
     # TODO: Lets have a step which installs DBT
       - name: Choose python version
