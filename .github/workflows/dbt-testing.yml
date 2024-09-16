@@ -106,7 +106,7 @@ jobs:
           done <<< "$changed_models"
           echo "changed_models=$models" >> $GITHUB_ENV  
 
-          echo Changed models: $models
+          echo Changed models: "$models"
     
     # TODO: Lets have a step which installs DBT
       - name: Choose python version
