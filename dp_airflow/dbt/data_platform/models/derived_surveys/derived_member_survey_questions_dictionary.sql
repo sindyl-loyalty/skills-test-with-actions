@@ -1,4 +1,6 @@
-{{
+-- testing toooooo
+    
+    {{
     config(
         alias='member_survey_questions_dictionary',        
         materialized='incremental',
