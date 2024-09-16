@@ -94,24 +94,17 @@ jobs:
     
     # Comparing files between the checked out branch and main branch 
     # TODO: We may also want to run test for updated tests and macros etc
-      - name: Get changed models name
+      - name: Get changed DBT models name
         run: |
           echo Checked out branch: ${{ env.branch_name }}
-          changed_models=$(git diff --name-only main -- "$DBT_PROJECT_DIR/models" | grep '.sql$' || true)
 
-          if [ -n "$changed_models" ]; then
-            models=""
-            while read -r model; do
-              model_name=$(basename "$model" .sql)
-              models="$models $model_name"
-            done <<< "$changed_models"
-            echo "changed_models=$models" >> $GITHUB_ENV
-          else 
-            echo "$changed_models" >> $GITHUB_ENV
-          fi
-         
-      - name: display models name
-        run: |
+          changed_models=$(git diff --name-only main -- "$DBT_PROJECT_DIR/models" | grep '.sql$' \ 
+                            | xargs -n 1 basename | sed 's/.sql//' | tr '\n' ' ')
+
+          echo "changed_models=${changed_models:-}" >> $GITHUB_ENV
+ 
+      - name: Display models name
+        run: |      
           echo Changed models: ${{ env.changed_models }}
     
     # TODO: Lets have a step which installs DBT
