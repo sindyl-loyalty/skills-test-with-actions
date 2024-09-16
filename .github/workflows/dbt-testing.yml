@@ -104,7 +104,9 @@ jobs:
           model_name=$(basename "$model" .sql)
           models="$models $model_name"
           done <<< "$changed_models"
-          echo "changed_models=$models" >> $GITHUB_ENV          
+          echo "changed_models=$models" >> $GITHUB_ENV  
+
+          echo Changed models: $models
     
     # TODO: Lets have a step which installs DBT
       - name: Choose python version
