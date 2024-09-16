@@ -98,8 +98,9 @@ jobs:
         run: |
           echo Checked out branch: ${{ env.branch_name }}
 
-          changed_models=$(git diff --name-only main -- "$DBT_PROJECT_DIR/models" | grep '.sql$' \ 
-                            | xargs -n 1 basename | sed 's/.sql//' | tr '\n' ' ')
+          changed_models=$(git diff --name-only main -- "$DBT_PROJECT_DIR/models" | grep '.sql$' | \
+                            xargs -n 1 basename | sed 's/.sql//' | \
+                            tr '\n' ' ')
 
           echo "changed_models=${changed_models:-}" >> $GITHUB_ENV
  
