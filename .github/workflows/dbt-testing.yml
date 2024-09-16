@@ -102,12 +102,12 @@ jobs:
           if [ -n "$changed_models" ]; then
             models=""
             while read -r model; do
-            model_name=$(basename "$model" .sql)
-            models="$models $model_name"
+              model_name=$(basename "$model" .sql)
+              models="$models $model_name"
             done <<< "$changed_models"
             echo "changed_models=$models" >> $GITHUB_ENV
           else 
-            echo "changed_models" >> $GITHUB_ENV
+            echo "$changed_models" >> $GITHUB_ENV
           fi
          
       - name: display models name
