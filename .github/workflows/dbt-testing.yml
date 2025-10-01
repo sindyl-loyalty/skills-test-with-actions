@@ -78,7 +78,7 @@ jobs:
     # TODO: Lets have a step to checkout the code in the branch we want to update.
     #  (how do we do this with manual input?)
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.branch || github.event.pull_request.head.ref || github.ref }}
       
